@@ -6,10 +6,12 @@
  * tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
-import { inferAsyncReturnType, initTRPC } from "@trpc/server";
+import { TRPCError, inferAsyncReturnType, initTRPC } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { ZodError } from "zod";
 import { db } from "./db/index";
+import Session from "supertokens-node/recipe/session";
+
 /**
  * 1. CONTEXT
  *
@@ -25,7 +27,7 @@ export const createContext = ({
 }: trpcExpress.CreateExpressContextOptions) => {
   console.log(req, res);
 
-  return { db };
+  return { db, req, res };
 }; // no context
 
 type Context = inferAsyncReturnType<typeof createContext>;
@@ -75,18 +77,22 @@ export const publicProcedure = t.procedure;
  * Reusable middleware that enforces users are logged in before running the
  * procedure
  */
-// const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-//   if (!ctx.user) {
-//     throw new TRPCError({ code: "UNAUTHORIZED" });
-//   }
-//   return next({
-//     ctx: {
-//       // infers the `user` as non-nullable
-//       user: ctx.user,
-//     },
-//   });
-// });
+const isAuthenticated = t.middleware(async ({ ctx, next }) => {
+  const session = await Session.getSession(ctx.req, ctx.res);
+  if (!session) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
 
+  return next({
+    ctx: {
+      session: {
+        userId: session.getUserId(),
+      },
+    },
+  });
+});
+
+export const authenticatedProcedure = t.procedure.use(isAuthenticated);
 /**
  * Protected (authed) procedure
  *
