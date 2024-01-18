@@ -1,10 +1,6 @@
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  publicProcedure,
-  authenticatedProcedure,
-} from "../trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { users } from "../db/schema/schema";
 import { eq } from "drizzle-orm";
 
@@ -12,9 +8,9 @@ export const userRouter = createTRPCRouter({
   allUsers: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.select().from(users);
   }),
-  getSession: authenticatedProcedure.query(async ({ ctx }) => {
+  getSession: protectedProcedure.query(async ({ ctx }) => {
     return {
-      userId: ctx.session.userId,
+      userId: ctx.user.id,
     };
   }),
   userById: publicProcedure
