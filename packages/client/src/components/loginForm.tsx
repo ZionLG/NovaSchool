@@ -13,10 +13,12 @@ import {
   FormMessage,
 } from "../components/ui/form";
 import { cn } from "../../@/lib/utils";
+import { toast } from "sonner";
 
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Dot } from "lucide-react";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 export const loginFormSchema = z.object({
   email: z.string().email({
     message: "Must be a valid Email Address.",
@@ -48,8 +50,8 @@ export const Icons = {
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
+  const supabase = useSupabaseClient();
+  const [isLoading, setIsLoading] = React.useState(false);
   const detailsForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -58,13 +60,30 @@ const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
     },
   });
   const onSubmitDetails = detailsForm.handleSubmit(
-    (values: z.infer<typeof loginFormSchema>) => {
-      console.log(values);
+    async (data: z.infer<typeof loginFormSchema>) => {
       setIsLoading(true);
+      const toastId = toast("Sonner");
+      toast.loading("Loading...", {
+        id: toastId,
+      });
 
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 3000);
+      const result = await supabase.auth
+        .signInWithPassword({
+          email: data.email,
+          password: data.password,
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+      if (result.error) {
+        toast.error(`${result.error.message}`, {
+          id: toastId,
+        });
+      } else {
+        toast.success(`Signed in as ${result.data.user.email}`, {
+          id: toastId,
+        });
+      }
     }
   );
   return (
@@ -104,7 +123,7 @@ const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
-            Sign Up
+            Sign In
           </Button>
           {detailsForm.formState.errors.root && (
             <span className="ml-2 text-destructive">

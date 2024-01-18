@@ -10,6 +10,7 @@ import { env } from "../env.mjs";
 import { type Session } from "@supabase/auth-helpers-nextjs";
 import { createClient } from "@supabase/supabase-js";
 import superjson from "superjson";
+import { Toaster } from "../components/ui/sonner";
 
 const App = ({
   Component,
@@ -40,6 +41,7 @@ const App = ({
           <Layout>
             <Component {...pageProps} />
           </Layout>
+          <Toaster />
         </QueryClientProvider>
       </trpc.Provider>
     </SessionContextProvider>

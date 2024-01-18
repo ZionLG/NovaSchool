@@ -17,6 +17,8 @@ import { cn } from "../../@/lib/utils";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Dot } from "lucide-react";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { toast } from "sonner";
 export const registerFormSchema = z.object({
   username: z
     .string()
@@ -57,6 +59,7 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const supabase = useSupabaseClient();
 
   const detailsForm = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
@@ -67,13 +70,38 @@ const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
     },
   });
   const onSubmitDetails = detailsForm.handleSubmit(
-    (values: z.infer<typeof registerFormSchema>) => {
-      console.log(values);
+    async (data: z.infer<typeof registerFormSchema>) => {
       setIsLoading(true);
+      const toastId = toast("Sonner");
+      toast.loading("Loading...", {
+        id: toastId,
+      });
 
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 3000);
+      const result = await supabase.auth
+        .signUp({
+          email: data.email,
+          password: data.password,
+          options: {
+            data: {
+              username: data.username,
+            },
+          },
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+      if (result.error) {
+        toast.error(`${result.error.message}`, {
+          id: toastId,
+        });
+      } else {
+        toast.success(
+          `Confirm your email ${result.data.user?.email} to log in.`,
+          {
+            id: toastId,
+          }
+        );
+      }
     }
   );
   return (
