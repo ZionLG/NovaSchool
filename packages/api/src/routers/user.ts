@@ -1,12 +1,17 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { users } from "../db/schema/schema";
 import { eq } from "drizzle-orm";
 
 export const userRouter = createTRPCRouter({
   allUsers: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.select().from(users);
+  }),
+  getSession: protectedProcedure.query(async ({ ctx }) => {
+    return {
+      userId: ctx.user.id,
+    };
   }),
   userById: publicProcedure
     .input(z.object({ userId: z.string() }))
@@ -24,7 +29,12 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return await ctx.db
         .insert(users)
-        .values({ fullName: input.userFullName, phone: input.userPhone })
+        .values({
+          fullName: input.userFullName,
+          phone: input.userPhone,
+          email: "",
+          hashedPassword: "",
+        })
         .returning();
     }),
   deleteUser: publicProcedure

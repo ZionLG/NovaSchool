@@ -8,7 +8,9 @@ export const users = sqliteTable("users", {
     .unique()
     .$defaultFn(() => createId()),
   fullName: text("full_name").notNull(),
+  email: text("email").notNull(),
   phone: text("phone"),
+  hashedPassword: text("hashed_password").notNull(),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
