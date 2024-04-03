@@ -1,0 +1,43 @@
+{
+  "id": "3305ef14-27bb-4768-84bb-7cc8a9ec6fbf",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "hubs": {
+      "name": "hubs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "hub_name": {
+          "name": "hub_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hub_description": {
+          "name": "hub_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

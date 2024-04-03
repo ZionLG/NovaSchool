@@ -1,67 +1,39 @@
 import { Inter } from "next/font/google";
-
-import { Button } from "../components/ui/button";
+import { helpers } from "../services/ssg";
 import HubCard from "../components/HubCard";
+import { InferGetStaticPropsType } from "next";
+import { trpc } from "../services";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const HubData = [
-  {
-    hubName: "History",
-    hubDescription:
-      "History Hub is your place to talk about historical battles, nations, events and more!",
-    hubId: "0",
-  },
-  {
-    hubName: "Art",
-    hubDescription: "Unlock your true passion!",
-    hubId: "1",
-  },
-  {
-    hubName: "Studies",
-    hubDescription: "Learn and improve yourself, or just copy your homework.",
-    hubId: "2",
-  },
-  {
-    hubName: "Gaming",
-    hubDescription: "Hardcore playing all day and night!",
-    hubId: "3",
-  },
-  {
-    hubName: "Geography",
-    hubDescription: "The earth is pretty neat when you get to know it.",
-    hubId: "4",
-  },
-  {
-    hubName: "Politics",
-    hubDescription: "Don't show this hub in your family reunion.",
-    hubId: "5",
-  },
-  {
-    hubName: "Music",
-    hubDescription: "Hear it all day long.",
-    hubId: "6",
-  },
-  {
-    hubName: "Other",
-    hubDescription: "Anything else?",
-    hubId: "7",
-  },
-];
+export async function getStaticProps() {
+  await helpers.hub.allHubs.prefetch();
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+    },
+    revalidate: 60,
+  };
+}
 
 export default function Home() {
+  const postQuery = trpc.hub.allHubs.useQuery();
+  if (postQuery.status !== "success") {
+    return <>Loading...</>;
+  }
+  const { data } = postQuery;
   return (
     <main
       className={`flex min-h-screen flex-col items-center gap-5 px-24  ${inter.className}`}
     >
       <h1 className="text-primary text-5xl font-bold py-10">Welcome to Nova</h1>
       <div className="grid lg:grid-cols-2   xl:grid-cols-3 grid-cols-1 gap-16">
-        {HubData.map((hub) => {
+        {data.map((hub) => {
           return (
             <HubCard
               className="flex flex-col justify-between"
               {...hub}
-              key={hub.hubId}
+              key={hub.id}
             />
           );
         })}

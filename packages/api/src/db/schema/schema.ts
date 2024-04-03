@@ -1,18 +1,10 @@
-import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core";
-import { createId } from "@paralleldrive/cuid2";
-import { sql } from "drizzle-orm";
+import { pgTable, serial, text } from "drizzle-orm/pg-core";
 
-export const users = sqliteTable("users", {
-  id: text("id")
-    .primaryKey()
-    .unique()
-    .$defaultFn(() => createId()),
-  fullName: text("full_name").notNull(),
-  email: text("email").notNull(),
-  phone: text("phone"),
-  hashedPassword: text("hashed_password").notNull(),
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+export const hubs = pgTable("hubs", {
+  id: serial("id").primaryKey(),
+  hubName: text("hub_name"),
+  hubDescription: text("hub_description"),
 });
 
-export type User = typeof users.$inferSelect; // return type when queried
-export type NewUser = typeof users.$inferInsert; // insert type
+export type Hub = typeof hubs.$inferSelect; // return type when queried
+export type NewHub = typeof hubs.$inferInsert; // insert type
