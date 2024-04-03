@@ -3,8 +3,8 @@ import ws from "@fastify/websocket";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import fastify from "fastify";
 
-import { createContext } from "./context";
-import { appRouter } from "./root";
+import { createContext } from "./context.js";
+import { appRouter } from "./root.js";
 
 const server = fastify({
   maxParamLength: 5000,

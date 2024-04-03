@@ -9,10 +9,13 @@
     }
   },
   "globalEnv": [
-    "DATABASE_URL",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY",
     "NEXT_PUBLIC_SUPABASE_URL",
     "SUPABASE_SERVICE_KEY",
-    "DIRECT_URL"
+    "DIRECT_URL",
+    "DB_HOST",
+    "DB_USERNAME",
+    "DB_PASSWORD",
+    "DB_NAME"
   ]
 }

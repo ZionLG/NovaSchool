@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "../components/ui/form";
 import { cn } from "../../@/lib/utils";
+import FormInput from "./FormInput";
 
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -62,14 +63,15 @@ const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
   const supabase = useSupabaseClient();
 
   const detailsForm = useForm<z.infer<typeof registerFormSchema>>({
-    resolver: zodResolver(registerFormSchema),
-    defaultValues: {
-      username: "",
-      email: "",
-      password: "",
-    },
-  });
-  const onSubmitDetails = detailsForm.handleSubmit(
+      resolver: zodResolver(registerFormSchema),
+      defaultValues: {
+        username: "",
+        email: "",
+        password: "",
+      },
+    }),
+    { control, handleSubmit, reset } = detailsForm;
+  const onSubmitDetails = handleSubmit(
     async (data: z.infer<typeof registerFormSchema>) => {
       setIsLoading(true);
       const toastId = toast("Sonner");
@@ -101,6 +103,7 @@ const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
             id: toastId,
           }
         );
+        reset();
       }
     }
   );
@@ -108,47 +111,15 @@ const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
     <div className={cn("grid gap-6", className)} {...props}>
       <Form {...detailsForm}>
         <form onSubmit={onSubmitDetails} className="grid gap-2">
-          <FormField
-            control={detailsForm.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-lg">Username</FormLabel>
-                <FormControl>
-                  <Input {...field} className="text-lg" />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={detailsForm.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-lg">Email</FormLabel>
-                <FormControl>
-                  <Input {...field} className="text-lg" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={detailsForm.control}
+          <FormInput name="username" label={"Username"} control={control} />
+          <FormInput name="email" label={"Email"} control={control} />
+          <FormInput
             name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-lg">Password</FormLabel>
-                <FormControl>
-                  <Input {...field} className="text-lg" type="password" />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
+            label={"Password"}
+            control={control}
+            type="password"
           />
+
           <Dot className="my-2 place-self-center" />
 
           <Button type="submit" disabled={isLoading}>

@@ -7,11 +7,11 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 
-import { db } from "./db/index";
+import db from "./db/index.js";
 import type { User } from "@supabase/supabase-js";
 import type { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
 import { createClient } from "@supabase/supabase-js";
-
+import { env } from "./env.js";
 /**
  * Defines your inner context shape.
  * Add fields here that the inner context brings.
@@ -31,8 +31,8 @@ interface CreateInnerContextOptions
  */
 export function createContextInner(_opts?: CreateInnerContextOptions) {
   const serverClient = createClient(
-    process.env.VITE_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_KEY!,
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.SUPABASE_SERVICE_ROLE_KEY,
     {
       auth: {
         persistSession: false,

@@ -3,22 +3,14 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../components/ui/form";
+import { Form } from "../components/ui/form";
 import { cn } from "../../@/lib/utils";
 import { toast } from "sonner";
 
-import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Dot } from "lucide-react";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import FormInput from "./FormInput";
 export const loginFormSchema = z.object({
   email: z.string().email({
     message: "Must be a valid Email Address.",
@@ -53,13 +45,14 @@ const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
   const supabase = useSupabaseClient();
   const [isLoading, setIsLoading] = React.useState(false);
   const detailsForm = useForm<z.infer<typeof loginFormSchema>>({
-    resolver: zodResolver(loginFormSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-  const onSubmitDetails = detailsForm.handleSubmit(
+      resolver: zodResolver(loginFormSchema),
+      defaultValues: {
+        email: "",
+        password: "",
+      },
+    }),
+    { control, handleSubmit } = detailsForm;
+  const onSubmitDetails = handleSubmit(
     async (data: z.infer<typeof loginFormSchema>) => {
       setIsLoading(true);
       const toastId = toast("Sonner");
@@ -90,32 +83,12 @@ const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
     <div className={cn("grid gap-6", className)} {...props}>
       <Form {...detailsForm}>
         <form onSubmit={onSubmitDetails} className="grid gap-2">
-          <FormField
-            control={detailsForm.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-lg">Email</FormLabel>
-                <FormControl>
-                  <Input {...field} className="text-lg" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={detailsForm.control}
+          <FormInput name="email" label={"Email"} control={control} />
+          <FormInput
             name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-lg">Password</FormLabel>
-                <FormControl>
-                  <Input {...field} className="text-lg" type="password" />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
+            label={"Password"}
+            control={control}
+            type="password"
           />
           <Dot className="my-2 place-self-center" />
 

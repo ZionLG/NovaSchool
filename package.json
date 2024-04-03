@@ -14,8 +14,8 @@
     "packages/*"
   ],
   "devDependencies": {
-    "prettier": "^3.0.3",
-    "turbo": "^1.10.16"
+    "prettier": "^3.2.5",
+    "turbo": "^1.13.2"
   },
   "engines": {
     "npm": ">=7.0.0",

@@ -2,7 +2,7 @@ import "../styles/global.css";
 import { AppProps } from "next/app";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { client, trpc } from "../services";
+import { trpc } from "../services";
 import { httpBatchLink } from "@trpc/react-query";
 import Layout from "../components/layout";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
@@ -11,6 +11,7 @@ import { type Session } from "@supabase/auth-helpers-nextjs";
 import { createClient } from "@supabase/supabase-js";
 import superjson from "superjson";
 import { Toaster } from "../components/ui/sonner";
+import { ThemeProvider } from "next-themes";
 
 const App = ({
   Component,
@@ -38,9 +39,16 @@ const App = ({
     >
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ThemeProvider>
           <Toaster />
         </QueryClientProvider>
       </trpc.Provider>
