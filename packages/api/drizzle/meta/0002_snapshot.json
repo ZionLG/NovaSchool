@@ -1,0 +1,129 @@
+{
+  "id": "a30e227c-0ec8-4916-99f4-4b6e4dd28145",
+  "prevId": "fa206099-71ae-4c69-98ef-12c313cde607",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "hubs": {
+      "name": "hubs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "hub_name": {
+          "name": "hub_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hub_description": {
+          "name": "hub_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "profiles": {
+      "name": "profiles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "profiles_to_hubs": {
+      "name": "profiles_to_hubs",
+      "schema": "",
+      "columns": {
+        "profile_id": {
+          "name": "profile_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hub_id": {
+          "name": "hub_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "joined_at": {
+          "name": "joined_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "profiles_to_hubs_profile_id_profiles_id_fk": {
+          "name": "profiles_to_hubs_profile_id_profiles_id_fk",
+          "tableFrom": "profiles_to_hubs",
+          "tableTo": "profiles",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "profiles_to_hubs_hub_id_hubs_id_fk": {
+          "name": "profiles_to_hubs_hub_id_hubs_id_fk",
+          "tableFrom": "profiles_to_hubs",
+          "tableTo": "hubs",
+          "columnsFrom": [
+            "hub_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "profiles_to_hubs_profile_id_hub_id_pk": {
+          "name": "profiles_to_hubs_profile_id_hub_id_pk",
+          "columns": [
+            "profile_id",
+            "hub_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

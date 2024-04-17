@@ -25,6 +25,20 @@ const App = ({
       links: [
         httpBatchLink({
           url: "http://localhost:4000/trpc",
+          async headers() {
+            return {
+              Authorization:
+                "Bearer " +
+                (await supabaseClient.auth.getSession()).data?.session
+                  ?.access_token,
+            };
+          },
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+            });
+          },
         }),
       ],
     })

@@ -35,31 +35,3 @@ const enforceUserIsAuthed = trpc.middleware(({ ctx, next }) => {
 });
 
 export const protectedProcedure = trpc.procedure.use(enforceUserIsAuthed);
-
-const enforceUserIsManager = trpc.middleware(({ ctx, next }) => {
-  if (!ctx.user?.id || !(ctx.user.app_metadata.HARDGUM_role === "MANAGER")) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  return next({
-    ctx: {
-      // infers the `user` as non-nullable
-      user: ctx.user,
-    },
-  });
-});
-
-export const managerProcedure = trpc.procedure.use(enforceUserIsManager);
-
-const enforceUserIsOffice = trpc.middleware(({ ctx, next }) => {
-  if (!ctx.user?.id || !(ctx.user.app_metadata.HARDGUM_role === "MANAGER")) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  return next({
-    ctx: {
-      // infers the `user` as non-nullable
-      user: ctx.user,
-    },
-  });
-});
-
-export const officeProcedure = trpc.procedure.use(enforceUserIsOffice);

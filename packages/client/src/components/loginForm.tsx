@@ -11,6 +11,8 @@ import { Button } from "./ui/button";
 import { Dot } from "lucide-react";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import FormInput from "./FormInput";
+import { useRouter } from "next/router";
+import { trpc } from "../services";
 export const loginFormSchema = z.object({
   email: z.string().email({
     message: "Must be a valid Email Address.",
@@ -41,8 +43,10 @@ export const Icons = {
 };
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
+const LoginForm = ({ className, ...props }: UserAuthFormProps) => {
+  const router = useRouter();
   const supabase = useSupabaseClient();
+  const utils = trpc.useUtils();
   const [isLoading, setIsLoading] = React.useState(false);
   const detailsForm = useForm<z.infer<typeof loginFormSchema>>({
       resolver: zodResolver(loginFormSchema),
@@ -76,6 +80,8 @@ const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
         toast.success(`Signed in as ${result.data.user.email}`, {
           id: toastId,
         });
+        router.push("/");
+        utils.hub.getUserHub.invalidate();
       }
     }
   );
@@ -109,4 +115,4 @@ const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
   );
 };
 
-export default RegisterForm;
+export default LoginForm;

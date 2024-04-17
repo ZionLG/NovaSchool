@@ -53,7 +53,6 @@ export async function createContext({ req }: CreateFastifyContextOptions) {
   );
 
   const user = response.data.user ?? undefined;
-
   return {
     ...contextInner,
     user,

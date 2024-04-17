@@ -21,7 +21,7 @@ const Header = () => {
     </>
   );
   return (
-    <>
+    <div>
       <header className="container top-0 z-50 flex flex-col items-center gap-5 bg-background p-5 text-foreground md:flex-row  md:gap-0">
         <div>
           <span className="mr-5 text-3xl tracking-widest">Nova</span>
@@ -34,7 +34,7 @@ const Header = () => {
       <div className="sticky top-0 z-50 flex  items-center justify-center bg-background p-3 md:hidden ">
         {navUser}
       </div>
-    </>
+    </div>
   );
 };
 

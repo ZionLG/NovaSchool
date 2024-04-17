@@ -20,6 +20,7 @@ import { Button } from "../components/ui/button";
 import { Dot } from "lucide-react";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { toast } from "sonner";
+import { useRouter } from "next/router";
 export const registerFormSchema = z.object({
   username: z
     .string()
@@ -59,6 +60,7 @@ export const Icons = {
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const supabase = useSupabaseClient();
 
@@ -104,6 +106,7 @@ const RegisterForm = ({ className, ...props }: UserAuthFormProps) => {
           }
         );
         reset();
+        router.push("/");
       }
     }
   );
