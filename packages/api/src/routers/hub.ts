@@ -16,6 +16,8 @@ import { TRPCError } from "@trpc/server";
 
 export const hubRouter = createTRPCRouter({
   allHubs: publicProcedure.query(async ({ ctx }) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     return await ctx.db.select().from(hubs);
   }),
   hubById: publicProcedure
@@ -152,12 +154,31 @@ export const hubRouter = createTRPCRouter({
       }
 
       try {
-        const [data] = await ctx.db
+        return await ctx.db
           .insert(chatMessages)
           .values({
             chatId: chat.id,
             message: message,
             profileId: profile.id,
+          })
+          .returning();
+        // return data;
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+    }),
+  newHub: protectedProcedure
+    .input(z.object({ name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { name } = input;
+
+      try {
+        const [data] = await ctx.db
+          .insert(hubs)
+          .values({
+            hubName: name,
           })
           .returning();
         return data;
@@ -171,19 +192,19 @@ export const hubRouter = createTRPCRouter({
   getMessages: protectedProcedure
     .input(z.object({ chatId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const chat = await ctx.db.query.chats.findFirst({
-        where: (hub, { eq }) => eq(hub.id, input.chatId),
-        with: {},
-      });
+      // const chat = await ctx.db.query.chats.findFirst({
+      //   where: (hub, { eq }) => eq(hub.id, input.chatId),
+      //   with: {},
+      // });
 
-      if (!chat) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Chat not found",
-        });
-      }
+      // if (!chat) {
+      //   throw new TRPCError({
+      //     code: "NOT_FOUND",
+      //     message: "Chat not found",
+      //   });
+      // }
 
-      const messages = await ctx.db.query.chatMessages.findMany({
+      return await ctx.db.query.chatMessages.findMany({
         where: (message, { eq }) => eq(message.chatId, input.chatId),
         orderBy: (message, { asc }) => asc(message.sentAt),
         with: {
@@ -196,7 +217,6 @@ export const hubRouter = createTRPCRouter({
         },
       });
       // TODO: Add pagination
-      return messages;
     }),
 
   getHubUsers: protectedProcedure

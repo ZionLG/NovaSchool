@@ -12,6 +12,7 @@ import { createClient } from "@supabase/supabase-js";
 import superjson from "superjson";
 import { Toaster } from "../components/ui/sonner";
 import { ThemeProvider } from "next-themes";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const App = ({
   Component,
@@ -59,6 +60,7 @@ const App = ({
             enableSystem
             disableTransitionOnChange
           >
+            <ReactQueryDevtools initialIsOpen={false} />
             <Layout>
               <Component {...pageProps} />
             </Layout>

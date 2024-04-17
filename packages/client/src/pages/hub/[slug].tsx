@@ -5,11 +5,12 @@ import { Input } from "../../components/ui/input";
 import { Send } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import Chat from "../../components/Chat";
 
 function HubPage() {
   const router = useRouter();
   const utils = trpc.useUtils();
-  const [message, setMessage] = useState("");
+
   const { data } = trpc.hub.hubByName.useQuery(
     {
       hubName: router.query.slug?.toString() ?? "",
@@ -39,26 +40,6 @@ function HubPage() {
     ?.map((user) => user)
     .filter((user) => presentIds.includes(user.userId));
 
-  const { data: messages } = trpc.hub.getMessages.useQuery(
-    { chatId: chatId! },
-    {
-      enabled: !!chatId,
-    }
-  );
-  const { mutate, isPending, variables } = trpc.hub.sendMessage.useMutation({
-    onSettled: async () => {
-      return await utils.hub.getMessages.invalidate({ chatId: chatId });
-    },
-    onSuccess: () => {
-      setMessage("");
-    },
-  });
-
-  const handleSendMessage = useCallback(() => {
-    if (chatId) {
-      mutate({ chatId: chatId, message });
-    }
-  }, [chatId, message]);
   const client = useSupabaseClient();
   React.useEffect(() => {
     //console.log("subscribing to order updates dashboard");
@@ -141,55 +122,11 @@ function HubPage() {
       };
     }
   }, [client, chatId, hubId]);
-  if (data)
+  if (data && chatId)
     return (
       <div className="container pt-16 flex h-full">
         <div className="w-72"></div>
-        <div className="flex grow flex-col h-full justify-between">
-          <div className="flex flex-col gap-5">
-            <div>{data.hub.hubName} Chat</div>
-            <div className="flex flex-col gap-2">
-              {messages?.map((message) => (
-                <div
-                  key={message.id}
-                  className="flex flex-col gap-1 p-3 rounded-md border"
-                >
-                  <div className="underline">{message.profile.username}</div>
-                  <div>{message.message}</div>
-                </div>
-              ))}
-              {isPending && (
-                <div className="flex flex-col gap-1 p-3 rounded-md border opacity-50">
-                  <div className="underline">
-                    {user?.user_metadata.username}
-                  </div>
-                  <div>{variables.message}</div>
-                </div>
-              )}
-            </div>
-          </div>
-          <div className=" p-4 my-5 rounded-md bg-neutral-900 flex gap-2">
-            <Input
-              className="bg-neutral-900 w-full focus-visible:ring-offset-0"
-              onKeyDown={(event) => {
-                if (!message || !chatId || isPending) return;
-                if (event.key === "Enter") {
-                  handleSendMessage();
-                }
-              }}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <Button
-              variant={"outline"}
-              disabled={!message || !chatId || isPending}
-              className="bg-neutral-900"
-              onClick={handleSendMessage}
-            >
-              <Send />
-            </Button>
-          </div>
-        </div>
+        <Chat chatId={chatId} />
         <div className="w-48 flex flex-col p-5">
           <div>
             <span>Online - {onlineUsers?.length}</span>

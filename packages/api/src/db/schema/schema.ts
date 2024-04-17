@@ -42,12 +42,16 @@ export const profilesRelations = relations(profiles, ({ many }) => ({
   chatMessages: many(chatMessages),
 }));
 
-export const hubsRelations = relations(hubs, ({ many }) => ({
+export const hubsRelations = relations(hubs, ({ many, one }) => ({
   profilesToHubs: many(profilesToHubs),
+  chat: one(chats, {
+    fields: [hubs.id],
+    references: [chats.hubId],
+  }),
 }));
 export const chatRelations = relations(chats, ({ many, one }) => ({
   chatMessages: many(chatMessages),
-  hubs: one(hubs),
+  hub: one(hubs),
 }));
 
 export const chatMessages = pgTable("chat_messages", {

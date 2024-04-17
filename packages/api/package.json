@@ -15,7 +15,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "dotenv-cli": "^7.4.1",
-    "drizzle-kit": "^0.20.14",
     "drizzle-orm": "^0.30.8",
     "fastify": "^4.26.2",
     "postgres": "^3.4.4",
@@ -26,12 +25,15 @@
   "scripts": {
     "dev": "pnpm with-env tsx watch src/index.ts",
     "generate": "pnpm with-env drizzle-kit generate:pg",
+    "studio": "pnpm with-env drizzle-kit studio",
     "push": "pnpm with-env drizzle-kit push:pg",
     "with-env": "dotenv -e ../../.env --"
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
+    "drizzle-kit": "^0.20.14",
     "eslint": "8.57.0",
+    "pg": "^8.11.5",
     "prettier": "^3.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
