@@ -26,15 +26,28 @@ const Chat = ({ chatId }: { chatId: string }) => {
   const user = useUser();
   if (messages)
     return (
-      <div className="flex grow flex-col h-full justify-between">
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-col gap-2">
-            {messages.map((message) => (
+      <div className="flex grow flex-col h-full max-h-full justify-between">
+        <div className="flex flex-col gap-5 overflow-y-scroll grow h-96 pr-3">
+          <div className="flex flex-col">
+            {messages.map((message, i) => (
               <div
                 key={message.id}
-                className="flex flex-col gap-1 p-3 rounded-md border"
+                className={`flex flex-col gap-1 ${messages[i - 1]?.profileId !== message.profileId && i !== 0 ? "py-1 mt-3" : "py-1"} px-3 rounded-md hover:bg-gray-900`}
               >
-                <div className="underline">{message.profile.username}</div>
+                {messages[i - 1]?.profileId !== message.profileId && (
+                  <div className=" cursor-default">
+                    <span className="font-bold text-lg">
+                      {message.profile.username}
+                    </span>{" "}
+                    <span className="opacity-75 text-sm">
+                      {message.sentAt.toLocaleDateString("he-IL")} At{" "}
+                      {message.sentAt.toLocaleTimeString("he-IL", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                )}
                 <div>{message.message}</div>
               </div>
             ))}

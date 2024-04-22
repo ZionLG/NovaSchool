@@ -13,7 +13,7 @@ export default function Layout({ children }: LayoutProps) {
           height: 100%;
         }
       `}</style>
-      <main className=" grow">{children}</main>
+      <main className="flex flex-col grow">{children}</main>
       <BottomBar />
     </div>
   );

@@ -124,7 +124,7 @@ function HubPage() {
   }, [client, chatId, hubId]);
   if (data && chatId)
     return (
-      <div className="container pt-16 flex h-full">
+      <div className="container pt-16 flex grow">
         <div className="w-72"></div>
         <Chat chatId={chatId} />
         <div className="w-48 flex flex-col p-5">

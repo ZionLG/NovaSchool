@@ -20,14 +20,14 @@ export async function getStaticProps() {
 
 export default function Home() {
   const postQuery = trpc.hub.allHubs.useQuery();
-  const utils = trpc.useUtils();
+  // const utils = trpc.useUtils();
 
-  const { mutate, isPending, variables } = trpc.hub.newHub.useMutation({
-    onSettled: async () => {
-      return await utils.hub.allHubs.invalidate();
-    },
-  });
-  const [postName, setPostName] = useState("");
+  // const { mutate, isPending, variables } = trpc.hub.newHub.useMutation({
+  //   onSettled: async () => {
+  //     return await utils.hub.allHubs.invalidate();
+  //   },
+  // });
+  // const [postName, setPostName] = useState("");
 
   if (postQuery.status !== "success") {
     return <>Loading...</>;
@@ -42,7 +42,7 @@ export default function Home() {
         <h1 className="text-primary text-5xl font-bold py-10">
           Welcome to Nova
         </h1>
-        <input
+        {/* <input
           type="text"
           value={postName}
           onChange={(e) => setPostName(e.target.value)}
@@ -54,7 +54,7 @@ export default function Home() {
           }}
         >
           Send
-        </button>
+        </button> */}
         <div className="grid lg:grid-cols-2   xl:grid-cols-3 grid-cols-1 gap-16">
           {data.map((hub) => {
             return (
@@ -65,14 +65,14 @@ export default function Home() {
               />
             );
           })}
-          {isPending && (
+          {/* {isPending && (
             <HubCard
               className="flex flex-col justify-between opacity-50"
               hubName={variables.name}
               hubDescription={""}
               id={""}
             />
-          )}
+          )} */}
         </div>
       </main>
     </>
