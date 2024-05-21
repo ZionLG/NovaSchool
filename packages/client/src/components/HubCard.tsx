@@ -22,11 +22,11 @@ const HubCard = ({ hubName, hubDescription, id, className }: HubCardProps) => {
   const utils = trpc.useUtils();
   const { mutate, isPending } = trpc.hub.joinHub.useMutation({
     onSuccess: () => {
-      utils.hub.getUserHub.invalidate();
+      utils.user.getUserHub.invalidate();
     },
   });
   const user = useUser();
-  const { data } = trpc.hub.getUserHub.useQuery(undefined, {
+  const { data } = trpc.user.getUserHub.useQuery(undefined, {
     enabled: !!user,
   });
   const router = useRouter();

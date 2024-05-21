@@ -6,6 +6,7 @@ import { Send } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import Chat from "../../components/Chat";
+import Missions from "../../components/Missions";
 
 function HubPage() {
   const router = useRouter();
@@ -20,11 +21,6 @@ function HubPage() {
   const chatId = data?.chat.id;
   const hubId = data?.hub.id;
   const user = useUser();
-  useEffect(() => {
-    if (!user) {
-      router.push("/");
-    }
-  }, [user]);
 
   const { data: users } = trpc.hub.getHubUsers.useQuery(
     { hubId: hubId! },
@@ -88,7 +84,7 @@ function HubPage() {
           (payload) => {
             console.log("new message", payload);
 
-            void utils.hub.getMessages.invalidate({
+            void utils.chat.getMessages.invalidate({
               chatId: chatId,
             });
           }
@@ -122,10 +118,10 @@ function HubPage() {
       };
     }
   }, [client, chatId, hubId]);
-  if (data && chatId)
+  if (data && chatId && hubId)
     return (
       <div className="container pt-16 flex grow">
-        <div className="w-72"></div>
+        <Missions hubId={hubId} />
         <Chat chatId={chatId} />
         <div className="w-48 flex flex-col p-5">
           <div>
