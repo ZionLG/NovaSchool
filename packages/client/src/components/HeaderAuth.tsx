@@ -16,8 +16,12 @@ import {
 } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import ProfileLevel from "./ProfileLevel";
+import { trpc } from "../services";
 
 const HeaderAuth = () => {
+  const { data: profile } = trpc.user.getProfile.useQuery();
   const user = useUser();
   const client = useSupabaseClient();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -25,7 +29,33 @@ const HeaderAuth = () => {
   return (
     <DropdownMenu open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <DropdownMenuTrigger className="outline-none">
-        <UserCircle2 strokeWidth={1} size={36} opacity={isOpen ? 0.5 : 1} />
+        {profile ? (
+          <div className={`pt-1 pl-1 relative`}>
+            <Avatar
+              className={`cursor-pointer group-hover:rounded-sm ${isOpen && "rounded-sm"}`}
+            >
+              <AvatarImage src="" alt={profile.username} />
+              <AvatarFallback
+                className={`group-hover:rounded-sm ${isOpen && "rounded-sm"}`}
+              >
+                {profile.username[0]}
+              </AvatarFallback>
+            </Avatar>
+            <ProfileLevel
+              level={Math.floor(profile.xp / 100) + 1}
+              levelClasses={{
+                1: "-bottom-2 -right-2",
+                2: "-bottom-2 -right-3",
+                3: "-bottom-2 -right-4",
+                4: "-bottom-2 -right-4",
+                5: "-bottom-2 -right-4",
+                6: "-bottom-2 -right-4",
+              }}
+            />
+          </div>
+        ) : (
+          <UserCircle2 strokeWidth={1} size={36} opacity={isOpen ? 0.5 : 1} />
+        )}
       </DropdownMenuTrigger>
       {user ? (
         <DropdownMenuContent>

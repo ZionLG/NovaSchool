@@ -12,4 +12,5 @@ const proxyClient = createTRPCClient<AppRouter>({
 });
 export const helpers = createServerSideHelpers({
   client: proxyClient,
+  transformer: superjson,
 });

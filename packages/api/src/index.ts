@@ -10,8 +10,24 @@ const server = fastify({
   maxParamLength: 5000,
 });
 void server.register(cors, {
-  // put your options here
+  origin: (origin, cb) => {
+    console.log(origin);
+    const hostname = new URL(origin ?? "").hostname;
+    console.log(hostname);
+
+    if (hostname === "localhost") {
+      //  Request from localhost will pass
+      cb(null, true);
+      return;
+    }
+    // Generate an error on other origins, disabling access
+    cb(new Error("Not allowed"), false);
+  },
+  methods: ["*"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
 });
+
 void server.register(ws);
 
 void server.register(fastifyTRPCPlugin, {

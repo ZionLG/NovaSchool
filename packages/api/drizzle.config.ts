@@ -3,9 +3,9 @@ import { env } from "./src/env";
 export default {
   schema: "./src/db/schema/schema.ts",
   out: "./drizzle",
-  driver: "pg",
+  dialect: "postgresql",
   dbCredentials: {
-    connectionString: env.DATABASE_URL,
+    url: env.DIRECT_URL,
     database: env.DB_NAME,
     user: env.DB_USERNAME,
     host: env.DB_HOST,

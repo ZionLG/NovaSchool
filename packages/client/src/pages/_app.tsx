@@ -12,6 +12,7 @@ import { createClient } from "@supabase/supabase-js";
 import superjson from "superjson";
 import { Toaster } from "../components/ui/sonner";
 import { ThemeProvider } from "next-themes";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const App = ({
   Component,
@@ -25,6 +26,20 @@ const App = ({
       links: [
         httpBatchLink({
           url: "http://localhost:4000/trpc",
+          async headers() {
+            return {
+              Authorization:
+                "Bearer " +
+                (await supabaseClient.auth.getSession()).data?.session
+                  ?.access_token,
+            };
+          },
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+            });
+          },
         }),
       ],
     })
@@ -45,6 +60,7 @@ const App = ({
             enableSystem
             disableTransitionOnChange
           >
+            <ReactQueryDevtools initialIsOpen={false} />
             <Layout>
               <Component {...pageProps} />
             </Layout>
