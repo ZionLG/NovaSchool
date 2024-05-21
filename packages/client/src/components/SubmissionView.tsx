@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
+
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Mission } from "api/src/db/schema/schema";
@@ -16,11 +8,6 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { trpc } from "../services";
 import { toast } from "sonner";
 import { ChevronsUpDown, Plus, X } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "./ui/collapsible";
 import type { RouterOutput } from "api/src/root";
 type submissionOutput =
   RouterOutput["mission"]["getMissionSubmissions"][number];

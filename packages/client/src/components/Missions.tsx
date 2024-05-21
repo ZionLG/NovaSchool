@@ -13,7 +13,13 @@ const Missions = ({ hubId }: { hubId: string }) => {
       <MissionSubmissionsDialog hubId={hubId} />
       <div>Missions</div>
       {missions
-        ?.sort((a, b) => a.hasParticipation - b.hasParticipation)
+        ?.sort((a, b) =>
+          a.hasParticipation === b.hasParticipation
+            ? 0
+            : a.hasParticipation
+              ? 1
+              : -1
+        )
         .map((mission) => (
           <div key={mission.id} className="space-y-2">
             <div className="flex flex-col gap-1">
